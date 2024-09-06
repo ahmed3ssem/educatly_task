@@ -1,5 +1,6 @@
 import 'package:educatly_task/feature/chat/data/data_sources/chat_remote_data_source.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 
 class ChatRemoteDataSourceImpl extends ChatRemoteDataSource{
 
@@ -8,20 +9,46 @@ class ChatRemoteDataSourceImpl extends ChatRemoteDataSource{
 
   @override
   Future<void> sendMessage(String message , String senderId , String receiverId) async{
-    var timeSend = DateTime.now().toUtc().toIso8601String();
-
-    final messageRef =
-    _database.child('users/$senderId/chats/$receiverId/messages').push();
-    final messageObj = {
-      'text': message,
+        _database.child('chatRooms')
+        .child(receiverId)
+        .child('messages');
+    String? messageId = _database.push().key;
+    Map<String, dynamic> messageData = {
+      'messageId': messageId,
       'senderId': senderId,
-      "timeSend": timeSend,
+      'message': message,
+      'timestamp': DateTime.now().millisecondsSinceEpoch,
     };
-    await messageRef.set(messageObj);
-    _database
-        .child('users/$receiverId/chats/$senderId/messages')
-        .push()
-        .set(messageObj);
+
+        _database.child(messageId!).set(messageData).then((_) {
+      debugPrint('Message sent successfully');
+    }).catchError((error) {
+      debugPrint('Failed to send message: $error');
+    });
   }
 
+  @override
+  Future<String> reveiveMessage() async{
+    String message = '';
+    return message;
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getChatHistory(String receiverId) async{
+        _database.child('chatRooms')
+        .child(receiverId)
+        .child('messages');
+    DatabaseEvent event = await _database.once();
+    List<Map<String, dynamic>> messages = [];
+    if (event.snapshot.value != null) {
+      Map<dynamic, dynamic>? messagesMap = event.snapshot.value as Map<dynamic, dynamic>?;
+
+      messagesMap?.forEach((key, value) {
+        Map<String, dynamic> message = Map<String, dynamic>.from(value);
+        messages.add(message);
+      });
+    }
+    print(messages);
+    return messages;
+  }
 }

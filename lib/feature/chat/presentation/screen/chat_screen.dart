@@ -1,9 +1,15 @@
+import 'package:educatly_task/config/PrefHelper/prefs.dart';
 import 'package:educatly_task/core/utils/app_colors.dart';
-import 'package:educatly_task/core/utils/assets_manager.dart';
+import 'package:educatly_task/core/utils/app_strings.dart';
 import 'package:educatly_task/core/utils/size_utils.dart';
-import 'package:educatly_task/widgets/svg_image_widget.dart';
-import 'package:educatly_task/widgets/text_widget.dart';
+import 'package:educatly_task/feature/chat/data/models/message_model.dart';
+import 'package:educatly_task/feature/chat/presentation/cubit/chat_cubit.dart';
+import 'package:educatly_task/widgets/empty_data_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
+
+import '../widgets/chat_bubble.dart';
 
 class ChatScreen extends StatefulWidget {
 
@@ -15,79 +21,73 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  // Dummy data for messages
-  final List<Map<String, dynamic>> messages = [
-    {'text': 'Hello!', 'isSender': true},
-    {'text': 'Hi, how are you?', 'isSender': false},
-    {'text': 'I\'m good, thanks!', 'isSender': true},
-    {'text': 'Great to hear that!', 'isSender': false},
-  ];
+
+  final TextEditingController _sendMessageController = TextEditingController();
+  String uid = '' , email = '';
+  List<Map<String, dynamic>> chatHistory = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getUserData();
+    getData();
+  }
+
+  getUserData(){
+    uid = Prefs.getString(AppStrings.userId);
+    email = Prefs.getString(AppStrings.email);
+  }
+
+  getData()=>context.read<ChatCubit>().getChatHistory(widget.receiverId);
+
+  Widget checkState(ChatState state){
+    if(state is ChatIsLoading){
+      return const Center(child: CircularProgressIndicator(color: AppColors.mainColor,),);
+    } else if(state is ChatError){
+      return const EmptyDataWidget();
+    } else if(state is ChatHistoryLoaded) {
+      chatHistory = state.chatHistory;
+      return chatWidget();
+    } else {
+      return chatWidget();
+    }
+  }
+
+  Widget chatWidget(){
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.all(10.0),
+            itemCount: chatHistory.length,
+            itemBuilder: (context, index) {
+              bool isSender = chatHistory[index]['senderId'] == uid;
+              return ChatBubble(message: chatHistory[index], isSender: isSender,);
+            },
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: buildInputField(),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF000000), // Background color
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF8F47FE),
-        elevation: 0,
-        /*actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.,
-            children: [
-              SVGImageWidget(image: AssetsManager.backIcon, width: 11.w, height: 20.h),
-              TextWidget(text: 'a7med@gmail.com', fontSize: 17.fSize , fontColor: AppColors.whiteColor, fontWeight: FontWeight.w700,),
-              SVGImageWidget(image: AssetsManager.backIcon, width: 11.w, height: 20.h),
-            ],
-          )
-        ],*/
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(10.0),
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                return buildMessageBubble(messages[index]);
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: buildInputField(),
-          ),
-        ],
-      ),
-    );
+    return  BlocBuilder<ChatCubit , ChatState>(builder: (context , state){
+      return Scaffold(
+        backgroundColor: const Color(0xFF000000), // Background color
+        appBar: AppBar(
+          backgroundColor: const Color(0xFF8F47FE),
+          elevation: 0,
+        ),
+        body: checkState(state),
+      );
+    });
   }
 
-  // Widget for message bubble
-  Widget buildMessageBubble(Map<String, dynamic> message) {
-    bool isSender = message['isSender'];
-    return Align(
-      alignment: isSender ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 5.0),
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-        decoration: BoxDecoration(
-          color: isSender ? const Color(0xFF8F47FE) : const Color(0xFF31252B),
-          borderRadius: BorderRadius.only(
-            topLeft: isSender ? const Radius.circular(20) : Radius.zero,
-            topRight: isSender ? Radius.zero : const Radius.circular(20),
-            bottomLeft: const Radius.circular(20),
-            bottomRight: const Radius.circular(20),
-          ),
-        ),
-        child: Text(
-          message['text'],
-          style: const TextStyle(color: Colors.white),
-        ),
-      ),
-    );
-  }
-
-  // Widget for input field at the bottom
   Widget buildInputField() {
     return Container(
       decoration: BoxDecoration(
@@ -96,22 +96,26 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       child: Row(
         children: [
-          IconButton(
-            icon: const Icon(Icons.sentiment_satisfied_alt),
-            onPressed: () {},
-          ),
           Expanded(
             child: TextField(
-              decoration: const InputDecoration(
-                hintText: 'Type a message',
+              controller: _sendMessageController,
+              decoration: InputDecoration(
+                hintText: 'Type a message'.tr,
                 border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+                contentPadding: EdgeInsets.symmetric(horizontal: 10.0.w),
               ),
             ),
           ),
           IconButton(
             icon: const Icon(Icons.send),
-            onPressed: () {},
+            onPressed: () {
+              if(_sendMessageController.value.text.isNotEmpty){
+                Message message = Message(senderId: uid, messageId: '', message: _sendMessageController.value.text.toString(), timestamp: 0);
+                chatHistory.add(message.toMap());
+                context.read<ChatCubit>().sendMessage(uid, widget.receiverId, _sendMessageController.value.text.toString());
+                _sendMessageController.clear();
+              }
+            },
           ),
         ],
       ),

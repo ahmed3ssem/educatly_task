@@ -8,6 +8,7 @@ import 'package:educatly_task/config/theme/app_theme.dart';
 import 'package:educatly_task/core/utils/app_strings.dart';
 import 'package:educatly_task/core/utils/local_strings.dart';
 import 'config/routes/app_routes.dart';
+import 'feature/chat/presentation/cubit/chat_cubit.dart';
 import 'injection_container.dart' as di;
 import 'widgets/message_widget.dart';
 
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
          BlocProvider(create: (context) => di.sl<LoginCubit>()),
           BlocProvider(create: (context) => di.sl<SignupCubit>()),
           BlocProvider(create: (context) => di.sl<HomeCubit>()),
+          BlocProvider(create: (context) => di.sl<ChatCubit>()),
         ],
         child: MediaQuery(
             data:  MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),

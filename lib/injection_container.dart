@@ -1,4 +1,11 @@
 import 'package:dio/dio.dart';
+import 'package:educatly_task/feature/chat/data/data_sources/chat_remote_data_source.dart';
+import 'package:educatly_task/feature/chat/data/data_sources/chat_remote_data_source_impl.dart';
+import 'package:educatly_task/feature/chat/data/repositories/chat_repository_impl.dart';
+import 'package:educatly_task/feature/chat/domain/repositories/chat_repository.dart';
+import 'package:educatly_task/feature/chat/domain/use_cases/chat_history_usecase.dart';
+import 'package:educatly_task/feature/chat/domain/use_cases/chat_usecase.dart';
+import 'package:educatly_task/feature/chat/presentation/cubit/chat_cubit.dart';
 import 'package:educatly_task/feature/home/data/data_sources/home_remote_data_source.dart';
 import 'package:educatly_task/feature/home/data/data_sources/home_remote_data_source_impl.dart';
 import 'package:educatly_task/feature/home/data/repositories/home_repository_impl.dart';
@@ -33,21 +40,26 @@ Future<void> init() async{
   sl.registerFactory(() => LoginCubit(loginUseCase: sl()));
   sl.registerFactory(() => SignupCubit(signUpUseCase: sl()));
   sl.registerFactory(() => HomeCubit(homeUseCase: sl()));
+  sl.registerFactory(() => ChatCubit(chatUseCase: sl() , chatHistoryUseCase: sl()));
 
   //UseCase
   sl.registerLazySingleton(() => LoginUseCase(loginRepository: sl()));
   sl.registerLazySingleton(() => SignUpUseCase(signUpRepository: sl()));
   sl.registerLazySingleton(() => HomeUseCase(homeRepository: sl()));
+  sl.registerLazySingleton(() => ChatUseCase(chatRepository: sl()));
+  sl.registerLazySingleton(() => ChatHistoryUseCase(chatRepository: sl()));
 
   //Repository
   sl.registerLazySingleton<LoginRepository>(() => LoginRepositoryImpl(loginRemoteDataSource: sl() , networkInfo: sl()));
   sl.registerLazySingleton<SignUpRepository>(() => SignUpRepositoryImpl(signUpRemoteDatasource: sl() , networkInfo: sl()));
   sl.registerLazySingleton<HomeRepository>(() => HomeRepositoryImpl(homeRemoteDataSource: sl() , networkInfo: sl()));
+  sl.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(chatRemoteDataSource: sl() , networkInfo: sl()));
 
   //DataSource
   sl.registerLazySingleton<LoginRemoteDatasource>(() => LoginRemoteDatasourceImpl());
   sl.registerLazySingleton<SignUpRemoteDatasource>(() => SignUpRemoteDatasourceImpl());
   sl.registerLazySingleton<HomeRemoteDataSource>(() => HomeRemoteDataSourceImpl(consumer: sl()));
+  sl.registerLazySingleton<ChatRemoteDataSource>(() => ChatRemoteDataSourceImpl());
 
   //Core
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));

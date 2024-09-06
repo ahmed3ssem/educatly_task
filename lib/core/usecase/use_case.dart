@@ -25,3 +25,14 @@ class LoginParams extends Equatable{
   @override
   List<Object?> get props => [email , password , context];
 }
+
+class ChatParams extends Equatable{
+
+  final String senderId;
+  final String receiverId;
+  final String message;
+
+  const ChatParams({required this.senderId,required this.receiverId , required this.message});
+  @override
+  List<Object?> get props => [senderId , receiverId , message];
+}
