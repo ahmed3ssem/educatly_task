@@ -6,7 +6,9 @@ import 'package:educatly_task/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
+
+  String receiverId;
+  ChatScreen({super.key , required this.receiverId});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();

@@ -1,3 +1,4 @@
+import 'package:educatly_task/config/arguments/routes_arguments.dart';
 import 'package:educatly_task/feature/chat/presentation/screen/chat_screen.dart';
 import 'package:educatly_task/feature/home/presentation/screen/home_Screen.dart';
 import 'package:educatly_task/feature/login/presentation/screen/login_screen.dart';
@@ -37,7 +38,8 @@ class AppRoutes{
         });
       case Routes.chat:
         return MaterialPageRoute(builder: (context) {
-          return const ChatScreen();
+          final args = routeSettings.arguments as ChatArguments;
+          return ChatScreen(receiverId: args.receiverId,);
         });
       case Routes.home:
         return MaterialPageRoute(builder: (context) {

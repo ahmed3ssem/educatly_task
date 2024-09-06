@@ -47,13 +47,12 @@ class ImageLoaderState extends State<ImageLoader> with TickerProviderStateMixin 
   }
 
   Widget loadDefault() {
-    return ClipRRect(
-      borderRadius: widget.borderRadius ?? BorderRadius.zero, // Apply borderRadius here
+    return ClipOval(
       child: CachedNetworkImage(
         imageUrl: widget.imageUrl,
         height: widget.height ?? 100.h,
         width: widget.width ?? 100.w,
-        fit: widget.fit ?? BoxFit.contain,
+        fit: widget.fit ?? BoxFit.cover, // Use BoxFit.cover for better fitting within a circle
         placeholder: (context, url) => const CircularProgressIndicator(),
         errorWidget: (context, url, error) => Container(
           padding: EdgeInsets.all(4.adaptSize),

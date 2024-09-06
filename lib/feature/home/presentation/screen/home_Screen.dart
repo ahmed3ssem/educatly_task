@@ -1,3 +1,5 @@
+import 'package:educatly_task/config/arguments/routes_arguments.dart';
+import 'package:educatly_task/config/routes/app_routes.dart';
 import 'package:educatly_task/core/utils/app_colors.dart';
 import 'package:educatly_task/feature/home/data/models/home_model.dart';
 import 'package:educatly_task/feature/home/presentation/cubit/home_cubit.dart';
@@ -39,7 +41,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return ListView.builder(
       itemCount: model.length ,
       itemBuilder: (context, index) {
-        return UserListItem(image: '',email: model[index].email,);
+        return InkWell(
+          onTap: ()=>Navigator.pushNamed(context , Routes.chat , arguments: ChatArguments(receiverId: model[index].uid) ),
+          child: UserListItem(image: '',email: model[index].email,),
+        );
       },
     );
   }

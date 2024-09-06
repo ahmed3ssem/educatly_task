@@ -17,24 +17,23 @@ class UserListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
-      elevation: 4,
+      elevation: 1,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12), // Rounded corners
       ),
       child: ListTile(
         contentPadding: EdgeInsets.all(12.adaptSize),
         leading: ImageLoader(imageUrl: image, height: 50.h, width: 50.w,),
+        trailing: Icon(
+          Icons.arrow_forward_ios,
+          size: 16.fSize,
+          color: Colors.grey.shade400, // Subtle arrow icon for interaction hint
+        ),
         title: Text(
           email,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16.fSize,
-          ),
-        ),
-        subtitle: Text(
-          'email'.tr,
-          style: TextStyle(
-            color: Colors.grey[600],
           ),
         ),
       ),
