@@ -87,11 +87,13 @@ class _ChatScreenState extends State<ChatScreen> {
         appBar: AppBar(
           backgroundColor: const Color(0xFF8F47FE),
           elevation: 0,
-          leading: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
+          leading: InkWell(
+            onTap: ()=>Navigator.pop(context),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
                   padding: EdgeInsets.only(left: 10.w),
                   child: SvgPicture.asset(
                     AssetsManager.backIcon,
@@ -99,8 +101,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     height: 20.h,
                     fit: BoxFit.contain, // Ensures the icon scales proportionally
                   ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
           title: TextWidget(text: widget.receiverEmail,fontSize: 17.fSize,fontWeight: FontWeight.w600,),
           automaticallyImplyLeading: false,

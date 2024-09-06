@@ -1,10 +1,15 @@
+import 'dart:async';
+
+import 'package:educatly_task/config/PrefHelper/prefs.dart';
 import 'package:educatly_task/config/arguments/routes_arguments.dart';
 import 'package:educatly_task/config/routes/app_routes.dart';
 import 'package:educatly_task/core/utils/app_colors.dart';
+import 'package:educatly_task/core/utils/size_utils.dart';
 import 'package:educatly_task/feature/home/data/models/home_model.dart';
 import 'package:educatly_task/feature/home/presentation/cubit/home_cubit.dart';
 import 'package:educatly_task/feature/home/presentation/widgets/user_widget.dart';
 import 'package:educatly_task/widgets/empty_data_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -37,6 +42,12 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> logout() async{
+    await FirebaseAuth.instance.signOut();
+    Prefs.clear();
+    Navigator.of(context).pushNamedAndRemoveUntil(Routes.login, (Route<dynamic> route) => false);
+  }
+
   Widget homeWidget(List<HomeModel> model){
     return ListView.builder(
       itemCount: model.length ,
@@ -52,6 +63,18 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return  BlocBuilder<HomeCubit , HomeState>(builder: (context , state){
       return Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          actions: [
+            InkWell(
+              onTap: logout,
+              child: Container(
+                margin: EdgeInsets.only(right: 10.w),
+                child: Icon(Icons.logout , color: AppColors.whiteColor, size: 25.fSize,),
+              ),
+            )
+          ],
+        ),
           body: checkState(state)
       );
     });
