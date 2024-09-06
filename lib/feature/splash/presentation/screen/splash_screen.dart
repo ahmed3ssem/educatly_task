@@ -20,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   startTimer() {
     _timer = Timer(const Duration(milliseconds: 200), () {
-      moveToHomeScreen();
+      moveToNextScreen();
     });
   }
 
@@ -28,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   moveToHomeScreen() {
     Future.delayed(const Duration(milliseconds: 500), () {
-      Navigator.of(context).pushNamedAndRemoveUntil(Routes.chat, (Route<dynamic> route) => false);
+      Navigator.of(context).pushNamedAndRemoveUntil(Routes.home, (Route<dynamic> route) => false);
     });
   }
 

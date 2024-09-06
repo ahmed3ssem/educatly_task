@@ -1,7 +1,7 @@
 class EndPoints{
 
-  static const baseUrl = 'https://jsonplaceholder.typicode.com/';
+  static const baseUrl = 'http://10.0.2.2:3000/';
 
-  static const postsUrl = 'posts';
+  static const users = 'users';
 
 }

@@ -1,4 +1,5 @@
 import 'package:educatly_task/feature/chat/presentation/screen/chat_screen.dart';
+import 'package:educatly_task/feature/home/presentation/screen/home_Screen.dart';
 import 'package:educatly_task/feature/login/presentation/screen/login_screen.dart';
 import 'package:educatly_task/feature/signup/presentation/screen/signup_screen.dart';
 import 'package:educatly_task/feature/splash/presentation/screen/splash_screen.dart';
@@ -13,6 +14,8 @@ class Routes{
   static const String signup = 'SignUp';
 
   static const String chat = 'Chat';
+
+  static const String home = 'Home';
 
 }
 
@@ -35,6 +38,10 @@ class AppRoutes{
       case Routes.chat:
         return MaterialPageRoute(builder: (context) {
           return const ChatScreen();
+        });
+      case Routes.home:
+        return MaterialPageRoute(builder: (context) {
+          return const HomeScreen();
         });
       default:
         return null;

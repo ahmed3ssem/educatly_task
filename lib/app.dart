@@ -1,3 +1,4 @@
+import 'package:educatly_task/feature/home/presentation/cubit/home_cubit.dart';
 import 'package:educatly_task/feature/login/presentation/cubit/login_cubit.dart';
 import 'package:educatly_task/feature/signup/presentation/cubit/signup_cubit.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
         providers: [
          BlocProvider(create: (context) => di.sl<LoginCubit>()),
           BlocProvider(create: (context) => di.sl<SignupCubit>()),
+          BlocProvider(create: (context) => di.sl<HomeCubit>()),
         ],
         child: MediaQuery(
             data:  MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),

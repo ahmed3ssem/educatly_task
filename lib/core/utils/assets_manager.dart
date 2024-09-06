@@ -6,4 +6,6 @@ class AssetsManager{
 
   static const String logo = '$imagePath/logo.jpg';
 
+  static const String backIcon = '$imagePath/back.svg';
+
 }

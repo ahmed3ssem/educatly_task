@@ -1,4 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:educatly_task/feature/home/data/data_sources/home_remote_data_source.dart';
+import 'package:educatly_task/feature/home/data/data_sources/home_remote_data_source_impl.dart';
+import 'package:educatly_task/feature/home/data/repositories/home_repository_impl.dart';
+import 'package:educatly_task/feature/home/domain/repositories/home_repository.dart';
+import 'package:educatly_task/feature/home/domain/use_cases/home_usecase.dart';
+import 'package:educatly_task/feature/home/presentation/cubit/home_cubit.dart';
 import 'package:educatly_task/feature/login/data/data_sources/login_remote_datasource.dart';
 import 'package:educatly_task/feature/login/data/data_sources/login_remote_datasource_impl.dart';
 import 'package:educatly_task/feature/login/data/repositories/login_repository_impl.dart';
@@ -26,18 +32,22 @@ Future<void> init() async{
   //Blocs
   sl.registerFactory(() => LoginCubit(loginUseCase: sl()));
   sl.registerFactory(() => SignupCubit(signUpUseCase: sl()));
+  sl.registerFactory(() => HomeCubit(homeUseCase: sl()));
 
   //UseCase
   sl.registerLazySingleton(() => LoginUseCase(loginRepository: sl()));
   sl.registerLazySingleton(() => SignUpUseCase(signUpRepository: sl()));
+  sl.registerLazySingleton(() => HomeUseCase(homeRepository: sl()));
 
   //Repository
   sl.registerLazySingleton<LoginRepository>(() => LoginRepositoryImpl(loginRemoteDataSource: sl() , networkInfo: sl()));
   sl.registerLazySingleton<SignUpRepository>(() => SignUpRepositoryImpl(signUpRemoteDatasource: sl() , networkInfo: sl()));
+  sl.registerLazySingleton<HomeRepository>(() => HomeRepositoryImpl(homeRemoteDataSource: sl() , networkInfo: sl()));
 
   //DataSource
   sl.registerLazySingleton<LoginRemoteDatasource>(() => LoginRemoteDatasourceImpl());
   sl.registerLazySingleton<SignUpRemoteDatasource>(() => SignUpRemoteDatasourceImpl());
+  sl.registerLazySingleton<HomeRemoteDataSource>(() => HomeRemoteDataSourceImpl(consumer: sl()));
 
   //Core
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
