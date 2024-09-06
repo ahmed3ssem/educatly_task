@@ -42,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
       itemCount: model.length ,
       itemBuilder: (context, index) {
         return InkWell(
-          onTap: ()=>Navigator.pushNamed(context , Routes.chat , arguments: ChatArguments(receiverId: model[index].uid) ),
+          onTap: ()=>Navigator.pushNamed(context , Routes.chat , arguments: ChatArguments(receiverId: model[index].uid , email: model[index].email) ),
           child: UserListItem(image: '',email: model[index].email,),
         );
       },

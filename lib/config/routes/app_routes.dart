@@ -39,7 +39,7 @@ class AppRoutes{
       case Routes.chat:
         return MaterialPageRoute(builder: (context) {
           final args = routeSettings.arguments as ChatArguments;
-          return ChatScreen(receiverId: args.receiverId,);
+          return ChatScreen(receiverId: args.receiverId,receiverEmail: args.email,);
         });
       case Routes.home:
         return MaterialPageRoute(builder: (context) {
